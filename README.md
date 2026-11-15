@@ -108,12 +108,12 @@ As opções **4 a 13** verificam a conexão antes de solicitar os dados da opera
 
 | Teste | Situação |
 |---|---|
-| Compilação no computador do grupo | [RESULTADO] |
-| Login correto e acesso ao menu | [RESULTADO] |
-| Três tentativas incorretas e encerramento | [RESULTADO] |
-| Digitação de letras e números fora da faixa | [RESULTADO] |
-| Bloqueio das operações sem conexão, antes de pedir dados | [RESULTADO] |
-| Carregamento da DLL no Windows | [RESULTADO] |
+| Compilação no computador do grupo | Aprovado. |
+| Login correto e acesso ao menu | Aprovado. |
+| Três tentativas incorretas e encerramento | Aprovado. |
+| Digitação de letras e números fora da faixa | Aprovado. |
+| Bloqueio das operações sem conexão, antes de pedir dados | Aprovado. |
+| Carregamento da DLL no Windows | Aprovado. |
 | Abertura e fechamento da conexão real | Pendente. |
 | Impressão de texto, acentos e várias cópias | Pendente. |
 | Impressão e leitura de QR Code | Pendente. |
@@ -124,12 +124,10 @@ As opções **4 a 13** verificam a conexão antes de solicitar os dados da opera
 | Abertura da gaveta | Pendente. |
 | Avanço, status do papel e corte | Pendente. |
 
-- **Data dos testes:** [DATA].
-- **Modelo da impressora:** Elgin i9.
-- **Windows:** [VERSÃO].
-- **JDK:** [VERSÃO].
-- **Driver:** [NOME E VERSÃO].
-- **Conexão:** [TIPO].
+- **Data dos testes em casa:** 13/11/2026.
+- **Windows:** Windows 11.
+- **JDK:** 21.0.2, 64 bits.
+- **Observação:** a DLL carregou, mas a tentativa de abertura USB sem impressora retornou -9999. A comunicação física será verificada na escola.
 
 ---
 
