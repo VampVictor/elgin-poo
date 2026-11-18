@@ -22,7 +22,7 @@ public class Main {
                 mostrarMenu(impressora);
                 int opcao = entrada.inteiro("Escolha: ", 0, 14);
 
-                // Esta verificação ocorre ANTES de perguntar texto, cópias ou arquivos.
+                // Esta verificação ocorre ANTES de perguntar o conteúdo ou arquivo.
                 if (opcao >= 4 && opcao <= 13 && !impressora.exigirConexao()) {
                     continue;
                 }
@@ -34,39 +34,26 @@ public class Main {
                         case 3 -> impressora.fecharConexao();
                         case 4 -> {
                             String texto = entrada.texto("Texto (uma linha, até 500 caracteres): ", 500);
-                            int posicao = entrada.inteiro("Alinhamento (0 esquerda / 1 centro / 2 direita): ", 0, 2);
-                            int estilo = entrada.inteiro("Estilo (0 normal, 1 B, 2 sublinhado, 4 reverso, 8 negrito; somas 0..15): ", 0, 15);
-                            int tamanho = entrada.inteiro("Altura (0 normal; 1..5 ampliada): ", 0, 5);
-                            int copias = entrada.inteiro("Cópias (1..10): ", 1, 10);
-                            impressora.imprimirTexto(texto, posicao, estilo, tamanho, copias);
+                            impressora.imprimirTexto(texto);
                         }
                         case 5 -> {
                             String dados = entrada.texto("Conteúdo do QR Code (até 200 caracteres): ", 200);
-                            int tamanho = entrada.inteiro("Tamanho (1..6; comece com 4): ", 1, 6);
-                            int nivel = entrada.inteiro("Correção (1..4; comece com 2): ", 1, 4);
-                            impressora.imprimirQrCode(dados, tamanho, nivel);
+                            impressora.imprimirQrCode(dados);
                         }
                         case 6 -> {
-                            System.out.println("CODE 128: tipo 8, altura 100, largura 2, HRI abaixo.");
                             String dados = entrada.texto("Digite de 1 a 12 dígitos (ex.: 012345678912): ", 12);
                             impressora.imprimirCodigoBarras(dados);
                         }
                         case 7 -> impressora.imprimirXmlSat(entrada.arquivo("XMLSAT.xml"));
-                        case 8 -> {
-                            System.out.println("Esta opção usa a assinatura constante do exemplo CANC_SAT.xml fornecido.");
-                            impressora.imprimirXmlCancelamento(entrada.arquivo("CANC_SAT.xml"));
-                        }
+                        case 8 -> impressora.imprimirXmlCancelamento(entrada.arquivo("CANC_SAT.xml"));
                         case 9 -> {
                             System.out.println("É necessária uma gaveta compatível conectada na porta de gaveta da impressora.");
-                            int pino = entrada.inteiro("Pino conforme a gaveta (0 ou 1): ", 0, 1);
-                            int ti = entrada.inteiro("Tempo inicial conforme a gaveta (1..255): ", 1, 255);
-                            int tf = entrada.inteiro("Tempo final conforme a gaveta (1..255): ", 1, 255);
-                            impressora.abrirGaveta(pino, ti, tf);
+                            impressora.abrirGaveta();
                         }
-                        case 10 -> impressora.sinalSonoro(entrada.inteiro("Quantidade de bips (1..63): ", 1, 63));
-                        case 11 -> impressora.avancarPapel(entrada.inteiro("Linhas (1..20): ", 1, 20));
+                        case 10 -> impressora.sinalSonoro();
+                        case 11 -> impressora.avancarPapel();
                         case 12 -> impressora.consultarPapel();
-                        case 13 -> impressora.cortarPapel(entrada.inteiro("Avanço antes do corte (1..20; teste 5): ", 1, 20));
+                        case 13 -> impressora.cortarPapel();
                         case 14 -> {
                             System.out.println("SO: " + System.getProperty("os.name"));
                             System.out.println("Java: " + System.getProperty("java.version"));

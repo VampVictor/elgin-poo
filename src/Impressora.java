@@ -19,6 +19,21 @@ import java.util.function.IntSupplier;
 
 /** Dados e operações da conexão. A interface ImpressoraDLL original não foi alterada. */
 public class Impressora {
+    // Parâmetros técnicos definidos uma vez, sem perguntas a cada operação.
+    private static final int TEXTO_POSICAO = 0;
+    private static final int TEXTO_ESTILO = 0;
+    private static final int TEXTO_TAMANHO = 0;
+    private static final int TEXTO_COPIAS = 1;
+    private static final int QR_TAMANHO = 4;
+    private static final int QR_CORRECAO = 2;
+    private static final int LINHAS_APOS_IMPRESSAO = 3;
+    private static final int AVANCO_CORTE = 5;
+    // Ajustar uma vez conforme a gaveta instalada; não são universais.
+    private static final int GAVETA_PINO = 0;
+    private static final int GAVETA_TEMPO_INICIO = 50;
+    private static final int GAVETA_TEMPO_FIM = 50;
+    private static final int QUANTIDADE_BIPS = 2;
+
     // Valor copiado do TXT recebido e comparado com o CANC_SAT.xml fornecido.
     public static final String ASS_QRCODE =
             "Q5DLkpdRijIRGY6YSSNsTWK1TztHL1vD0V1Jc4spo/CEUqICEb9SFy82ym8EhBRZjbh3btsZhF+sjHqEMR159i4agru9x6KsepK/q0"
@@ -200,6 +215,10 @@ public class Impressora {
         return false;
     }
 
+    public boolean imprimirTexto(String texto) {
+        return imprimirTexto(texto, TEXTO_POSICAO, TEXTO_ESTILO, TEXTO_TAMANHO, TEXTO_COPIAS);
+    }
+
     public boolean imprimirTexto(String texto, int posicao, int estilo, int tamanho, int copias) {
         if (!exigirConexao()) {
             return false;
@@ -222,11 +241,15 @@ public class Impressora {
                 falhaNativa(e);
                 return false;
             }
-            if (!avancarPapel(3)) {
+            if (!finalizarImpressao()) {
                 return false;
             }
         }
         return true;
+    }
+
+    public boolean imprimirQrCode(String dados) {
+        return imprimirQrCode(dados, QR_TAMANHO, QR_CORRECAO);
     }
 
     public boolean imprimirQrCode(String dados, int tamanho, int nivel) {
@@ -238,7 +261,7 @@ public class Impressora {
         intervalo(tamanho, 1, 6, "Tamanho do QR Code");
         intervalo(nivel, 1, 4, "Nível de correção");
         return executarZero("QR Code", () -> dll.ImpressaoQRCode(dados, tamanho, nivel))
-                && avancarPapel(3);
+                && finalizarImpressao();
     }
 
     public boolean imprimirCodigoBarras(String numeros) {
@@ -249,7 +272,7 @@ public class Impressora {
             throw new IllegalArgumentException("Informe de 1 a 12 dígitos para o CODE 128.");
         }
         return executarZero("CODE 128", () -> dll.ImpressaoCodigoBarras(8, "{A" + numeros, 100, 2, 2))
-                && avancarPapel(3);
+                && finalizarImpressao();
     }
 
     public boolean imprimirXmlSat(String arquivo) throws IOException, SAXException, ParserConfigurationException {
@@ -259,7 +282,8 @@ public class Impressora {
         String xml = lerXml(arquivo);
         validarXml(xml, "CFe");
         // Envia o conteúdo, e não apenas o nome do arquivo, conforme o enunciado.
-        return executarZero("XML SAT", () -> dll.ImprimeXMLSAT(xml, 0));
+        return executarZero("XML SAT", () -> dll.ImprimeXMLSAT(xml, 0))
+                && finalizarImpressao();
     }
 
     public boolean imprimirXmlCancelamento(String arquivo)
@@ -275,7 +299,26 @@ public class Impressora {
             throw new IllegalArgumentException("A assinatura constante pertence ao exemplo CANC_SAT.xml fornecido."
                     + " Para outro cancelamento, adapte a assinatura correspondente antes de usar.");
         }
-        return executarZero("XML de cancelamento SAT", () -> dll.ImprimeXMLCancelamentoSAT(xml, ASS_QRCODE, 0));
+        return executarZero("XML de cancelamento SAT", () -> dll.ImprimeXMLCancelamentoSAT(xml, ASS_QRCODE, 0))
+                && finalizarImpressao();
+    }
+
+    /** Só finaliza após impressão aceita; uma falha interrompe a sequência. */
+    private boolean finalizarImpressao() {
+        if (!avancarPapel(LINHAS_APOS_IMPRESSAO)) {
+            System.out.println("Conteúdo já enviado, mas o avanço falhou. Confira o papel antes de repetir.");
+            return false;
+        }
+        if (!cortarPapel()) {
+            System.out.println("Conteúdo já enviado, mas o corte falhou. Confira o papel; não reimprima automaticamente.");
+            return false;
+        }
+        System.out.println("Impressão e corte: comandos enviados.");
+        return true;
+    }
+
+    public boolean abrirGaveta() {
+        return abrirGaveta(GAVETA_PINO, GAVETA_TEMPO_INICIO, GAVETA_TEMPO_FIM);
     }
 
     public boolean abrirGaveta(int pino, int tempoInicio, int tempoFim) {
@@ -290,6 +333,10 @@ public class Impressora {
         return executarZero("Gaveta", () -> dll.AbreGaveta(pino, tempoInicio, tempoFim));
     }
 
+    public boolean sinalSonoro() {
+        return sinalSonoro(QUANTIDADE_BIPS);
+    }
+
     public boolean sinalSonoro(int quantidade) {
         if (!exigirConexao()) {
             return false;
@@ -298,12 +345,20 @@ public class Impressora {
         return executarZero("Sinal sonoro", () -> dll.SinalSonoro(quantidade, 50, 5));
     }
 
+    public boolean avancarPapel() {
+        return avancarPapel(LINHAS_APOS_IMPRESSAO);
+    }
+
     public boolean avancarPapel(int linhas) {
         if (!exigirConexao()) {
             return false;
         }
         intervalo(linhas, 1, 20, "Linhas");
         return executarZero("Avanço de papel", () -> dll.AvancaPapel(linhas));
+    }
+
+    public boolean cortarPapel() {
+        return cortarPapel(AVANCO_CORTE);
     }
 
     public boolean cortarPapel(int avanco) {
