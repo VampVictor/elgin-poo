@@ -90,7 +90,7 @@ As pastas das bibliotecas e os dois XMLs devem ficar na raiz do projeto. Esta im
 | 3 | Fecha a conexão com a impressora. |
 | 4 | Pede apenas o texto, imprime uma cópia em formato normal e corta o papel. |
 | 5 | Pede apenas o conteúdo do QR Code, imprime com parâmetros padrão e corta o papel. |
-| 6 | Pede de 1 a 12 dígitos, imprime CODE 128 e corta o papel. |
+| 6 | Imprime automaticamente o código de barras CODE 128 de exemplo (`012345678912`) e corta o papel. |
 | 7 | Pede o arquivo XML de venda SAT, imprime e corta; Enter usa `XMLSAT.xml`. |
 | 8 | Pede o arquivo XML de cancelamento SAT, imprime com a assinatura do exemplo e corta; Enter usa `CANC_SAT.xml`. |
 | 9 | Envia o comando de abertura de gaveta usando pino e tempos predefinidos. |
@@ -148,15 +148,15 @@ O resultado esperado é `APROVADO: 115 verificações da lógica Java, sem hardw
 | Digitação de letras e números fora da faixa | Aprovado. |
 | Bloqueio das operações sem conexão, antes de pedir dados | Aprovado. |
 | Carregamento da DLL no Windows | Aprovado. |
-| Abertura e fechamento da conexão real | Pendente. |
-| Impressão de texto, acentos e várias cópias | Pendente. |
-| Impressão e leitura de QR Code | Pendente. |
-| Impressão e leitura de CODE 128 | Pendente. |
-| Impressão do XML SAT e do cancelamento SAT | Pendente. |
-| Tratamento de arquivo XML inexistente com conexão aberta | Pendente. |
-| Sinal sonoro | Pendente. |
-| Abertura da gaveta | Pendente. |
-| Avanço, status do papel e corte | Pendente. |
+| Abertura e fechamento da conexão real | Aprovado. |
+| Impressão de texto, acentos e várias cópias | Aprovado. |
+| Impressão e leitura de QR Code | Aprovado. |
+| Impressão e leitura de CODE 128 | Aprovado. |
+| Impressão do XML SAT e do cancelamento SAT | Aprovado. |
+| Tratamento de arquivo XML inexistente com conexão aberta | Aprovado. |
+| Sinal sonoro | Aprovado. |
+| Abertura da gaveta | Aprovado. |
+| Avanço, status do papel e corte | Aprovado. |
 
 - **Data dos testes em casa:** 13/11/2026.
 - **Windows:** Windows 11.
@@ -170,7 +170,7 @@ O resultado esperado é `APROVADO: 115 verificações da lógica Java, sem hardw
 
 - [Documentação do SDK E1_Impressora](https://elgindevelopercommunity.github.io/group___m1.html).
 - [Códigos de retorno e erros da Elgin](https://elgindevelopercommunity.github.io/group__g1.html).
-- [Download Center da Elgin](https://www.elgin.com.br/download-center).
+- [Download Center da Elgin](https://github.com/ElginDeveloperCommunity/Impressoras/tree/master/Impressoras%20N%C3%A3o%20Fiscais).
 
 ---
 

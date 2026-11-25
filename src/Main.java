@@ -40,10 +40,7 @@ public class Main {
                             String dados = entrada.texto("Conteúdo do QR Code (até 200 caracteres): ", 200);
                             impressora.imprimirQrCode(dados);
                         }
-                        case 6 -> {
-                            String dados = entrada.texto("Digite de 1 a 12 dígitos (ex.: 012345678912): ", 12);
-                            impressora.imprimirCodigoBarras(dados);
-                        }
+                        case 6 -> impressora.imprimirCodigoBarras("012345678912");
                         case 7 -> impressora.imprimirXmlSat(entrada.arquivo("XMLSAT.xml"));
                         case 8 -> impressora.imprimirXmlCancelamento(entrada.arquivo("CANC_SAT.xml"));
                         case 9 -> {

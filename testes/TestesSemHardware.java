@@ -161,7 +161,7 @@ public class TestesSemHardware {
         Impressora impressora = new Impressora(falsa);
         String log = executarMenu("admin\n1234\n1\n1\ni9\nUSB\n0\n2\n"
                 + "4\nTESTE\n5\nhttps://example.com\n"
-                + "6\n012345678912\n7\n\n8\n\n9\n10\n11\n12\n13\n14\n0\n",
+                + "6\n7\n\n8\n\n9\n10\n11\n12\n13\n14\n0\n",
                 impressora);
         verificar(!log.contains("Não foi possível executar") && !log.contains("Erro ao ler"), "Fluxo completo sem erros");
         verificar(!impressora.isConexaoAberta(), "Sair fecha a conexão");
@@ -249,10 +249,11 @@ public class TestesSemHardware {
         BibliotecaFalsa falsa = new BibliotecaFalsa();
         Impressora impressora = new Impressora(falsa);
         String log = executarMenu("admin\n1234\n1\n1\ni9\nUSB\n0\n2\n"
-                + "4\nAção na escola\n5\nhttps://example.com\n6\n012345678912\n"
+                + "4\nAção na escola\n5\nhttps://example.com\n6\n"
                 + "7\n\n8\n\n9\n10\n11\n12\n13\n14\n0\n", impressora);
         verificar(!log.contains("Entrada encerrada") && !log.contains("Não foi possível executar")
-                && !log.contains("Entrada inválida"), "Menu consome apenas conteúdo/arquivo nas impressões");
+                && !log.contains("Entrada inválida") && !log.contains("Digite de 1 a 12 dígitos"),
+                "Código de barras imprime sem entrada; texto, QR e XML leem conteúdo ou arquivo");
         for (String pergunta : List.of("Alinhamento (", "Estilo (", "Altura (", "Cópias (", "Tamanho (",
                 "Correção (", "Pino conforme", "Tempo inicial", "Tempo final", "Quantidade de bips (",
                 "Linhas (", "Avanço antes do corte (")) {
@@ -263,7 +264,7 @@ public class TestesSemHardware {
         verificar(java.util.Arrays.equals(falsa.argumentos.get("ImpressaoQRCode"),
                 new Object[]{"https://example.com", 4, 2}), "QR usa tamanho 4 e correção 2");
         verificar(java.util.Arrays.equals(falsa.argumentos.get("ImpressaoCodigoBarras"),
-                new Object[]{8, "{A012345678912", 100, 2, 2}), "Barras preservam zeros e parâmetros legíveis");
+                new Object[]{8, "{A012345678912", 100, 2, 2}), "Código de barras automático usa o exemplo com zero inicial");
         verificar(java.util.Arrays.equals(falsa.argumentos.get("SinalSonoro"),
                 new Object[]{2, 50, 5}), "Sinal sonoro usa dois bips sem pergunta");
         verificar(java.util.Arrays.equals(falsa.argumentos.get("AbreGaveta"),
@@ -276,10 +277,10 @@ public class TestesSemHardware {
         falsa = new BibliotecaFalsa();
         impressora = new Impressora(falsa);
         log = executarMenu("admin\n1234\n1\n1\ni9\nUSB\n0\n2\n"
-                + "6\nABC\n10\n7\nnao-existe.xml\n5\nOK\n0\n", impressora);
-        verificar(contar(falsa.chamadas, "Corte") == 1, "Dados/arquivos inválidos não cortam");
+                + "10\n7\nnao-existe.xml\n5\nOK\n0\n", impressora);
+        verificar(contar(falsa.chamadas, "Corte") == 1, "Arquivo inválido não corta");
         verificar(falsa.chamadas.contains("SinalSonoro") && falsa.chamadas.contains("ImpressaoQRCode"),
-                "Menu continua depois de dados/arquivos inválidos");
+                "Menu continua depois de arquivo inválido");
     }
 
     private static String executarMenu(String texto, Impressora impressora) throws Exception {
