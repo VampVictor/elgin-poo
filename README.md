@@ -177,5 +177,5 @@ O resultado esperado é `APROVADO: 115 verificações da lógica Java, sem hardw
 ## 👥 Autores
 
 - Alonso Araújo
-- Cauã Germano
+- Cauã Silva Germano
 - Victor Faria de Barros
